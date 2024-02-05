@@ -1,5 +1,5 @@
-use reqwest::Error;
 use clap::Parser;
+use reqwest::Error;
 
 mod alphavantage_request;
 mod response_writers;
@@ -18,17 +18,16 @@ struct Args {
 }
 
 fn main() -> Result<(), Error> {
+    let args = Args::parse();
 
-    let args = Args::parse();    
-    
-    let response = alphavantage_request::query_api(
-        &args.function
-        , &args.symbol
-        , &args.output_size
-        , "demo"
-    ).unwrap();
+    let response =
+        alphavantage_request::query_api(&args.function, &args.symbol, &args.output_size, "demo")
+            .unwrap();
 
-    let _ =  response_writers::time_series_daily_to_csv(response, &args.symbol);
+    let _ = match args.function.as_str() {
+        "TIME_SERIES_DAILY" => response_writers::time_series_daily_to_csv(response, &args.symbol),
+        &_ => todo!(),
+    };
 
     Ok(())
 }
