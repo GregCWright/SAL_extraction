@@ -1,19 +1,7 @@
 use csv::Writer;
-use reqwest::Error;
+use csv::Error;
 
-mod alphavantage_request;
-
-fn main() -> Result<(), Error> {
-
-    let symbol = "IBM";
-
-    let response = alphavantage_request::query_api(
-        "TIME_SERIES_DAILY"
-        , "IBM"
-        , "full"
-        , "demo"
-    ).unwrap();
-
+pub fn time_series_daily_to_csv(response: serde_json::Value, symbol: &str) -> Result<(), Error> {
     let mut wtr = Writer::from_path("test.csv")
         .expect("File Instance I/O Error");
     
@@ -40,7 +28,6 @@ fn main() -> Result<(), Error> {
             ]
         )
         ;
-
     }
 
     Ok(())

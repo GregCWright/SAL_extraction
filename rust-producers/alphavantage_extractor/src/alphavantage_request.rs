@@ -11,7 +11,7 @@ pub async fn query_api(function: &str, symbol: &str, output_size: &str, api_key:
         , api_key = api_key
     );
 
-    let response = 
+    let response: Result<serde_json::Value, Error> = 
         reqwest::get(&request_url)
         .await
         .expect("Reqwest Error")
