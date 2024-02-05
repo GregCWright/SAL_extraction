@@ -1,27 +1,7 @@
 use csv::Writer;
-use reqwest::Error;
+use csv::Error;
 
-#[tokio::main]
-async fn main() -> Result<(), Error> {
-
-    let symbol: &str = "IBM";
-    
-    let request_url = format!(
-        "https://www.alphavantage.co/query?function={function}&symbol={symbol}&outputsize={output_size}&apikey={api_key}"
-        , function = "TIME_SERIES_DAILY"
-        , symbol = "IBM"
-        , output_size = "full"
-        , api_key = "demo"
-    );
-    
-    println!("{}", request_url);
-    let response = 
-        reqwest::get(&request_url)
-        .await?
-        .json::<serde_json::Value>()
-        .await?
-    ;
-
+pub fn time_series_daily_to_csv(response: serde_json::Value, symbol: &str) -> Result<(), Error> {
     let mut wtr = Writer::from_path("test.csv")
         .expect("File Instance I/O Error");
     
@@ -48,7 +28,6 @@ async fn main() -> Result<(), Error> {
             ]
         )
         ;
-
     }
 
     Ok(())

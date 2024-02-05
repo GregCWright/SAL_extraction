@@ -1,5 +1,5 @@
 [workspace]
 
 members = [
-    "rust-producers/time_series_daily"    
+    "rust-producers/alphavantage_extractor"    
 ]
