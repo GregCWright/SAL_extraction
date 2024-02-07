@@ -563,3 +563,160 @@ pub fn balance_sheet_to_csv(response: serde_json::Value) -> Result<(), Error> {
 
     Ok(())
 }
+
+pub fn cash_flow_to_csv(response: serde_json::Value) -> Result<(), Error> {
+    let prefix_1: &str = "annual_cash_flow";
+    let prefix_2: &str = "quarterly_cash_flow";
+    let symbol: &str = std_json_str!(response["symbol"]);
+    let execution_time = Utc::now();
+    let mut wtr: Writer<std::fs::File> = writer_maker(prefix_1, symbol, execution_time);
+
+    wtr.write_record([
+        "fiscal_date_ending",
+        "symbol",
+        "reported_currency",
+        "operating_cashflow",
+        "payments_for_operating_activities",
+        "proceeds_from_operating_activities",
+        "change_in_operating_liabilities",
+        "change_in_operating_assets",
+        "depreciation_depletion_and_amortization",
+        "captial_expenditures",
+        "change_in_receivables",
+        "change_in_inventory",
+        "profit_loss",
+        "cashflow_from_investment",
+        "cashflow_from_financing",
+        "proceeds_from_repayments_of_short_term_debt",
+        "payments_for_repurchase_of_common_stock",
+        "payments_for_repurchase_of_equity",
+        "payments_for_repurchase_of_preferred_stock",
+        "dividend_payout",
+        "dividend_payout_common_stock",
+        "dividend_payout_preferred_stock",
+        "proceeds_from_issuance_of_common_stock",
+        "proceeds_from_issuance_of_long_term_debt_and_capital_securities_net",
+        "proceeds_from_issuance_of_preferred_stock",
+        "proceeds_from_repurchase_of_equity",
+        "proceeds_from_sale_of_treasury_stock",
+        "change_in_cash_and_cash_equivalents",
+        "change_in_exchange_rate",
+        "net_income",
+        "execution_time"
+    ])
+    .expect("File Header Write Error (Annual Cash Flow)");
+
+    if let Some(cash_flows) = response["annualReports"].as_array() {
+        for cash_flow in cash_flows {
+            let _ = wtr.write_record([
+                std_json_str!(cash_flow["fiscalDateEnding"]),
+                symbol,
+                std_json_str!(cash_flow["reportedCurrency"]),
+                std_json_str!(cash_flow["operatingCashflow"]),
+                std_json_str!(cash_flow["paymentsForOperatingActivities"]),
+                std_json_str!(cash_flow["proceedsFromOperatingActivities"]),
+                std_json_str!(cash_flow["changeInOperatingLiabilities"]),
+                std_json_str!(cash_flow["changeInOperatingAssets"]),
+                std_json_str!(cash_flow["depreciationDepletionAndAmortization"]),
+                std_json_str!(cash_flow["capitalExpenditures"]),
+                std_json_str!(cash_flow["changeInReceivables"]),
+                std_json_str!(cash_flow["changeInInventory"]),
+                std_json_str!(cash_flow["profitLoss"]),
+                std_json_str!(cash_flow["cashflowFromInvestment"]),
+                std_json_str!(cash_flow["cashflowFromFinancing"]),
+                std_json_str!(cash_flow["proceedsFromRepaymentsOfShortTermDebt"]),
+                std_json_str!(cash_flow["paymentsForRepurchaseOfCommonStock"]),
+                std_json_str!(cash_flow["paymentsForRepurchaseOfEquity"]),
+                std_json_str!(cash_flow["paymentsForRepurchaseOfPreferredStock"]),
+                std_json_str!(cash_flow["dividendPayout"]),
+                std_json_str!(cash_flow["dividendPayoutCommonStock"]),
+                std_json_str!(cash_flow["dividendPayoutPreferredStock"]),
+                std_json_str!(cash_flow["proceedsFromIssuanceOfCommonStock"]),
+                std_json_str!(cash_flow["proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"]),
+                std_json_str!(cash_flow["proceedsFromIssuanceOfPreferredStock"]),
+                std_json_str!(cash_flow["proceedsFromRepurchaseOfEquity"]),
+                std_json_str!(cash_flow["proceedsFromSaleOfTreasuryStock"]),
+                std_json_str!(cash_flow["changeInCashAndCashEquivalents"]),
+                std_json_str!(cash_flow["changeInExchangeRate"]),
+                std_json_str!(cash_flow["netIncome"]),
+                &execution_time.to_string(),
+            ]);
+        }
+    }
+
+    wtr = writer_maker(prefix_2, symbol, execution_time);
+    wtr.write_record([
+        "fiscal_date_ending",
+        "symbol",
+        "reported_currency",
+        "operating_cashflow",
+        "payments_for_operating_activities",
+        "proceeds_from_operating_activities",
+        "change_in_operating_liabilities",
+        "change_in_operating_assets",
+        "depreciation_depletion_and_amortization",
+        "captial_expenditures",
+        "change_in_receivables",
+        "change_in_inventory",
+        "profit_loss",
+        "cashflow_from_investment",
+        "cashflow_from_financing",
+        "proceeds_from_repayments_of_short_term_debt",
+        "payments_for_repurchase_of_common_stock",
+        "payments_for_repurchase_of_equity",
+        "payments_for_repurchase_of_preferred_stock",
+        "dividend_payout",
+        "dividend_payout_common_stock",
+        "dividend_payout_preferred_stock",
+        "proceeds_from_issuance_of_common_stock",
+        "proceeds_from_issuance_of_long_term_debt_and_capital_securities_net",
+        "proceeds_from_issuance_of_preferred_stock",
+        "proceeds_from_repurchase_of_equity",
+        "proceeds_from_sale_of_treasury_stock",
+        "change_in_cash_and_cash_equivalents",
+        "change_in_exchange_rate",
+        "net_income",
+        "execution_time"
+    ])
+    .expect("File Header Write Error (Quarterly Cash Flow)");
+
+    if let Some(cash_flows) = response["quarterlyReports"].as_array() {
+        for cash_flow in cash_flows {
+            let _ = wtr.write_record([
+                std_json_str!(cash_flow["fiscalDateEnding"]),
+                symbol,
+                std_json_str!(cash_flow["reportedCurrency"]),
+                std_json_str!(cash_flow["operatingCashflow"]),
+                std_json_str!(cash_flow["paymentsForOperatingActivities"]),
+                std_json_str!(cash_flow["proceedsFromOperatingActivities"]),
+                std_json_str!(cash_flow["changeInOperatingLiabilities"]),
+                std_json_str!(cash_flow["changeInOperatingAssets"]),
+                std_json_str!(cash_flow["depreciationDepletionAndAmortization"]),
+                std_json_str!(cash_flow["capitalExpenditures"]),
+                std_json_str!(cash_flow["changeInReceivables"]),
+                std_json_str!(cash_flow["changeInInventory"]),
+                std_json_str!(cash_flow["profitLoss"]),
+                std_json_str!(cash_flow["cashflowFromInvestment"]),
+                std_json_str!(cash_flow["cashflowFromFinancing"]),
+                std_json_str!(cash_flow["proceedsFromRepaymentsOfShortTermDebt"]),
+                std_json_str!(cash_flow["paymentsForRepurchaseOfCommonStock"]),
+                std_json_str!(cash_flow["paymentsForRepurchaseOfEquity"]),
+                std_json_str!(cash_flow["paymentsForRepurchaseOfPreferredStock"]),
+                std_json_str!(cash_flow["dividendPayout"]),
+                std_json_str!(cash_flow["dividendPayoutCommonStock"]),
+                std_json_str!(cash_flow["dividendPayoutPreferredStock"]),
+                std_json_str!(cash_flow["proceedsFromIssuanceOfCommonStock"]),
+                std_json_str!(cash_flow["proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"]),
+                std_json_str!(cash_flow["proceedsFromIssuanceOfPreferredStock"]),
+                std_json_str!(cash_flow["proceedsFromRepurchaseOfEquity"]),
+                std_json_str!(cash_flow["proceedsFromSaleOfTreasuryStock"]),
+                std_json_str!(cash_flow["changeInCashAndCashEquivalents"]),
+                std_json_str!(cash_flow["changeInExchangeRate"]),
+                std_json_str!(cash_flow["netIncome"]),
+                &execution_time.to_string(),
+            ]);
+        }
+    }
+
+    Ok(())
+}

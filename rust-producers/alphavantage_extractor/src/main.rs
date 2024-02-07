@@ -38,6 +38,7 @@ fn main() -> Result<(), Error> {
         "OVERVIEW" => response_writers::overview_to_csv(response),
         "INCOME_STATEMENT" => response_writers::income_statement_to_csv(response),
         "BALANCE_SHEET" => response_writers::balance_sheet_to_csv(response),
+        "CASH_FLOW" => response_writers::cash_flow_to_csv(response),
         &_ => todo!("Function not implemented"),
     };
 
