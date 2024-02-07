@@ -56,6 +56,7 @@ pub fn time_series_daily_to_csv(response: serde_json::Value) -> Result<(), Error
 }
 
 pub fn earnings_to_csv(response: serde_json::Value) -> Result<(), Error> {
+    
     let prefix_1: &str = "annual_earnings";
     let prefix_2: &str = "quarterly_earnings";
     let symbol: &str = std_json_str!(response["symbol"]);
@@ -110,4 +111,117 @@ pub fn earnings_to_csv(response: serde_json::Value) -> Result<(), Error> {
     }
 
     Ok(())
+}
+
+pub fn overview_to_csv(response: serde_json::Value) -> Result<(), Error> {
+    
+    let prefix: &str = "overview";
+    let symbol: &str = std_json_str!(response["Symbol"]);
+    let execution_time = Utc::now();
+    let mut wtr: Writer<std::fs::File> = writer_maker(prefix, symbol, execution_time);
+
+    wtr.write_record([
+        "symbol",
+        "asset_type",
+        "name",
+        "description",
+        "central_index_key",
+        "exchange",
+        "currency",
+        "country",
+        "sector",
+        "industry",
+        "address",
+        "fiscal_year_end",
+        "latest_quarter",
+        "market_capitalization",
+        "interest_before_interest_taxes_amortization",
+        "price_earnings_ratio",
+        "price_earnings_growth_ratio",
+        "book_value",
+        "dividend_per_share",
+        "dividend_yield",
+        "earnings_per_share",
+        "revenue_per_share_trailing_twelve_months",
+        "profit_margin",
+        "operating_margin_trailing_twelve_months",
+        "return_on_assets_trailing_twelve_months",
+        "return_on_equity_trailing_twelve_months",
+        "revenue_trailing_twelve_months",
+        "gross_profit_trailing_twelve_months",
+        "diluted_earnings_per_share_trailing_twelve_months",
+        "quarterly_earnings_growth_year_on_year",
+        "quarterly_revenue_growth_year_on_year",
+        "analyst_target_price",
+        "trailing_price_to_earnings_ratio",
+        "forward_price_to_earnings_ratio",
+        "price_to_sales_ratio_trailing_twelve_months",
+        "price_to_book_ratio",
+        "enterprise_value_to_revenue_ratio",
+        "enterprise_value_to_interest_before_interest_taxes_amortization_ratio",
+        "beta",
+        "fifty_two_week_high",
+        "fifty_two_week_low",
+        "fifty_day_moving_average",
+        "two_hundred_day_moving_average",
+        "shares_outstanding",
+        "dividend_date",
+        "ex_dividend_date",
+        "execution_time"
+    ])
+    .expect("File Header Write Error (Overview)");
+
+    wtr.write_record([
+        std_json_str!(response["Symbol"]),
+        std_json_str!(response["AssetType"]),
+        std_json_str!(response["Name"]),
+        std_json_str!(response["Description"]),
+        std_json_str!(response["CIK"]),
+        std_json_str!(response["Exchange"]),
+        std_json_str!(response["Currency"]),
+        std_json_str!(response["Country"]),
+        std_json_str!(response["Sector"]),
+        std_json_str!(response["Industry"]),
+        std_json_str!(response["Address"]),
+        std_json_str!(response["FiscalYearEnd"]),
+        std_json_str!(response["LatestQuarter"]),
+        std_json_str!(response["MarketCapitalization"]),
+        std_json_str!(response["EBITDA"]),
+        std_json_str!(response["PERatio"]),
+        std_json_str!(response["PEGRatio"]),
+        std_json_str!(response["BookValue"]),
+        std_json_str!(response["DividendPerShare"]),
+        std_json_str!(response["DividendYield"]),
+        std_json_str!(response["EPS"]),
+        std_json_str!(response["RevenuePerShareTTM"]),
+        std_json_str!(response["ProfitMargin"]),
+        std_json_str!(response["OperatingMarginTTM"]),
+        std_json_str!(response["ReturnOnAssetsTTM"]),
+        std_json_str!(response["ReturnOnEquityTTM"]),
+        std_json_str!(response["RevenueTTM"]),
+        std_json_str!(response["GrossProfitTTM"]),
+        std_json_str!(response["DilutedEPSTTM"]),
+        std_json_str!(response["QuarterlyEarningsGrowthYOY"]),
+        std_json_str!(response["QuarterlyRevenueGrowthYOY"]),
+        std_json_str!(response["AnalystTargetPrice"]),
+        std_json_str!(response["TrailingPE"]),
+        std_json_str!(response["ForwardPE"]),
+        std_json_str!(response["PriceToSalesRatioTTM"]),
+        std_json_str!(response["PriceToBookRatio"]),
+        std_json_str!(response["EVToRevenue"]),
+        std_json_str!(response["EVToEBITDA"]),
+        std_json_str!(response["Beta"]),
+        std_json_str!(response["52WeekHigh"]),
+        std_json_str!(response["52WeekLow"]),
+        std_json_str!(response["50DayMovingAverage"]),
+        std_json_str!(response["200DayMovingAverage"]),
+        std_json_str!(response["SharesOutstanding"]),
+        std_json_str!(response["DividendDate"]),
+        std_json_str!(response["ExDividendDate"]),
+        &execution_time.to_string(),
+    ])
+    .expect("CSV Write error (Overview)");
+
+    Ok(())
+
 }
