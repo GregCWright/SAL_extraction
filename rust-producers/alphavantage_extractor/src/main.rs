@@ -36,6 +36,7 @@ fn main() -> Result<(), Error> {
         "TIME_SERIES_DAILY" => response_writers::time_series_daily_to_csv(response),
         "EARNINGS" => response_writers::earnings_to_csv(response),
         "OVERVIEW" => response_writers::overview_to_csv(response),
+        "INCOME_STATEMENT" => response_writers::income_statement_to_csv(response),
         &_ => todo!("Function not implemented"),
     };
 

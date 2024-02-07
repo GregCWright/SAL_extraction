@@ -225,3 +225,148 @@ pub fn overview_to_csv(response: serde_json::Value) -> Result<(), Error> {
     Ok(())
 
 }
+
+pub fn income_statement_to_csv(response: serde_json::Value) -> Result<(), Error> {
+    let prefix_1: &str = "annual_income_statement";
+    let prefix_2: &str = "quarterly_income_statement";
+    let symbol: &str = std_json_str!(response["symbol"]);
+    let execution_time = Utc::now();
+    let mut wtr: Writer<std::fs::File> = writer_maker(prefix_1, symbol, execution_time);
+
+    wtr.write_record([
+        "fiscal_date_ending",
+        "symbol",
+        "reported_currency",
+        "gross_profit",
+        "total_revenue",
+        "cost_of_revenue",
+        "cost_of_goods_and_services_sold",
+        "operating_income",
+        "selling_general_and_administrative",
+        "research_and_development",
+        "operating_expenses",
+        "investment_income_net",
+        "net_interest_income",
+        "interest_income",
+        "interest_expense",
+        "non_interest_income",
+        "other_non_operating_income",
+        "depreciation",
+        "depreciation_and_amortization",
+        "income_before_tax",
+        "income_tax_expense",
+        "interest_and_dept_expense",
+        "net_income_from_continuting_operations",
+        "comprehensive_income_net_of_tax",
+        "earnings_before_interest_taxes",
+        "earnings_befpre_interest_taxes_depreciation_amortization",
+        "net_income",
+        "execution_time"
+    ])
+    .expect("File Header Write Error (Annual Income Statement)");
+
+    if let Some(earnings) = response["annualReports"].as_array() {
+        for earning in earnings {
+            let _ = wtr.write_record([
+                std_json_str!(earning["fiscalDateEnding"]),
+                symbol,
+                std_json_str!(earning["reportedCurrency"]),
+                std_json_str!(earning["grossProfit"]),
+                std_json_str!(earning["totalRevenue"]),
+                std_json_str!(earning["costOfRevenue"]),
+                std_json_str!(earning["costofGoodsAndServicesSold"]),
+                std_json_str!(earning["operatingIncome"]),
+                std_json_str!(earning["sellingGeneralAndAdministrative"]),
+                std_json_str!(earning["researchAndDevelopment"]),
+                std_json_str!(earning["operatingExpenses"]),
+                std_json_str!(earning["investmentIncomeNet"]),
+                std_json_str!(earning["netInterestIncome"]),
+                std_json_str!(earning["interestIncome"]),
+                std_json_str!(earning["interestExpense"]),
+                std_json_str!(earning["nonInterestIncome"]),
+                std_json_str!(earning["otherNonOperatingIncome"]),
+                std_json_str!(earning["depreciation"]),
+                std_json_str!(earning["depreciationAndAmortization"]),
+                std_json_str!(earning["incomeBeforeTax"]),
+                std_json_str!(earning["incomeTaxExpense"]),
+                std_json_str!(earning["interestAndDebtExpense"]),
+                std_json_str!(earning["netIncomeFromContinuingOperations"]),
+                std_json_str!(earning["comprehensiveIncomeNetOfTax"]),
+                std_json_str!(earning["ebit"]),
+                std_json_str!(earning["ebitda"]),
+                std_json_str!(earning["netIncome"]),
+                &execution_time.to_string(),
+            ]);
+        }
+    }
+
+    wtr = writer_maker(prefix_2, symbol, execution_time);
+    wtr.write_record([
+        "fiscal_date_ending",
+        "symbol",
+        "reported_currency",
+        "gross_profit",
+        "total_revenue",
+        "cost_of_revenue",
+        "cost_of_goods_and_services_sold",
+        "operating_income",
+        "selling_general_and_administrative",
+        "research_and_development",
+        "operating_expenses",
+        "investment_income_net",
+        "net_interest_income",
+        "interest_income",
+        "interest_expense",
+        "non_interest_income",
+        "other_non_operating_income",
+        "depreciation",
+        "depreciation_and_amortization",
+        "income_before_tax",
+        "income_tax_expense",
+        "interest_and_dept_expense",
+        "net_income_from_continuting_operations",
+        "comprehensive_income_net_of_tax",
+        "earnings_before_interest_taxes",
+        "earnings_befpre_interest_taxes_depreciation_amortization",
+        "net_income",
+        "execution_time"
+    ])
+    .expect("File Header Write Error (Quarterly Income Statement)");
+
+    if let Some(earnings) = response["quarterlyReports"].as_array() {
+        for earning in earnings {
+            let _ = wtr.write_record([
+                std_json_str!(earning["fiscalDateEnding"]),
+                symbol,
+                std_json_str!(earning["reportedCurrency"]),
+                std_json_str!(earning["grossProfit"]),
+                std_json_str!(earning["totalRevenue"]),
+                std_json_str!(earning["costOfRevenue"]),
+                std_json_str!(earning["costofGoodsAndServicesSold"]),
+                std_json_str!(earning["operatingIncome"]),
+                std_json_str!(earning["sellingGeneralAndAdministrative"]),
+                std_json_str!(earning["researchAndDevelopment"]),
+                std_json_str!(earning["operatingExpenses"]),
+                std_json_str!(earning["investmentIncomeNet"]),
+                std_json_str!(earning["netInterestIncome"]),
+                std_json_str!(earning["interestIncome"]),
+                std_json_str!(earning["interestExpense"]),
+                std_json_str!(earning["nonInterestIncome"]),
+                std_json_str!(earning["otherNonOperatingIncome"]),
+                std_json_str!(earning["depreciation"]),
+                std_json_str!(earning["depreciationAndAmortization"]),
+                std_json_str!(earning["incomeBeforeTax"]),
+                std_json_str!(earning["incomeTaxExpense"]),
+                std_json_str!(earning["interestAndDebtExpense"]),
+                std_json_str!(earning["netIncomeFromContinuingOperations"]),
+                std_json_str!(earning["comprehensiveIncomeNetOfTax"]),
+                std_json_str!(earning["ebit"]),
+                std_json_str!(earning["ebitda"]),
+                std_json_str!(earning["netIncome"]),
+                &execution_time.to_string(),
+            ]);
+        }
+    }
+
+    Ok(())
+}
