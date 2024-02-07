@@ -370,3 +370,196 @@ pub fn income_statement_to_csv(response: serde_json::Value) -> Result<(), Error>
 
     Ok(())
 }
+
+pub fn balance_sheet_to_csv(response: serde_json::Value) -> Result<(), Error> {
+    let prefix_1: &str = "annual_balance_sheet";
+    let prefix_2: &str = "quarterly_balance_sheet";
+    let symbol: &str = std_json_str!(response["symbol"]);
+    let execution_time = Utc::now();
+    let mut wtr: Writer<std::fs::File> = writer_maker(prefix_1, symbol, execution_time);
+
+    wtr.write_record([
+        "fiscal_date_ending",
+        "symbol",
+        "reported_currency",
+        "total_assets",
+        "total_current_assets",
+        "cash_and_cash_equivalents_at_carrying_value",
+        "cash_and_short_term_investments",
+        "inventory",
+        "current_net_receivables",
+        "total_non_current_assets",
+        "property_plant_equipment",
+        "accumulated_depreciation_amortization_property_plant_equipment",
+        "intangible_assets",
+        "intangible_assets_excluding_goodwill",
+        "goodwill",
+        "investments",
+        "long_term_investments",
+        "short_term_investments",
+        "other_current_assets",
+        "other_non_current_assets",
+        "total_liabilities",
+        "total_current_liabilities",
+        "current_accounts_payable",
+        "deferred_revenue",
+        "current_debt",
+        "short_term_debt",
+        "total_non_current_liabilities",
+        "capital_lease_obligations",
+        "long_term_debt",
+        "current_long_term_debt",
+        "long_term_debt_non_current",
+        "short_long_term_debt_total",
+        "other_current_liabilities",
+        "other_non_current_liabilities",
+        "total_shareholder_equity",
+        "treasury_stock",
+        "retained_earnings",
+        "common_stock",
+        "common_stock_shares_outstanding",
+        "execution_time"
+    ])
+    .expect("File Header Write Error (Annual Balance Sheet)");
+
+    if let Some(balances) = response["annualReports"].as_array() {
+        for balance in balances {
+            let _ = wtr.write_record([
+                std_json_str!(balance["fiscalDateEnding"]),
+                symbol,
+                std_json_str!(balance["reportedCurrency"]),
+                std_json_str!(balance["totalAssets"]),
+                std_json_str!(balance["totalCurrentAssets"]),
+                std_json_str!(balance["cashAndCashEquivalentsAtCarryingValue"]),
+                std_json_str!(balance["cashAndShortTermInvestments"]),
+                std_json_str!(balance["inventory"]),
+                std_json_str!(balance["currentNetReceivables"]),
+                std_json_str!(balance["totalNonCurrentAssets"]),
+                std_json_str!(balance["propertyPlantEquipment"]),
+                std_json_str!(balance["accumulatedDepreciationAmortizationPPE"]),
+                std_json_str!(balance["intangibleAssets"]),
+                std_json_str!(balance["intangibleAssetsExcludingGoodwill"]),
+                std_json_str!(balance["goodwill"]),
+                std_json_str!(balance["investments"]),
+                std_json_str!(balance["longTermInvestments"]),
+                std_json_str!(balance["shortTermInvestments"]),
+                std_json_str!(balance["otherCurrentAssets"]),
+                std_json_str!(balance["otherNonCurrentAssets"]),
+                std_json_str!(balance["totalLiabilities"]),
+                std_json_str!(balance["totalCurrentLiabilities"]),
+                std_json_str!(balance["currentAccountsPayable"]),
+                std_json_str!(balance["deferredRevenue"]),
+                std_json_str!(balance["currentDebt"]),
+                std_json_str!(balance["shortTermDebt"]),
+                std_json_str!(balance["totalNonCurrentLiabilities"]),
+                std_json_str!(balance["capitalLeaseObligations"]),
+                std_json_str!(balance["longTermDebt"]),
+                std_json_str!(balance["currentLongTermDebt"]),
+                std_json_str!(balance["longTermDebtNoncurrent"]),
+                std_json_str!(balance["shortLongTermDebtTotal"]),
+                std_json_str!(balance["otherCurrentLiabilities"]),
+                std_json_str!(balance["otherNonCurrentLiabilities"]),
+                std_json_str!(balance["totalShareholderEquity"]),
+                std_json_str!(balance["treasuryStock"]),
+                std_json_str!(balance["retainedEarnings"]),
+                std_json_str!(balance["commonStock"]),
+                std_json_str!(balance["commonStockSharesOutstanding"]),
+                &execution_time.to_string(),
+            ]);
+        }
+    }
+
+    wtr = writer_maker(prefix_2, symbol, execution_time);
+    wtr.write_record([
+        "fiscal_date_ending",
+        "symbol",
+        "reported_currency",
+        "total_assets",
+        "total_current_assets",
+        "cash_and_cash_equivalents_at_carrying_value",
+        "cash_and_short_term_investments",
+        "inventory",
+        "current_net_receivables",
+        "total_non_current_assets",
+        "property_plant_equipment",
+        "accumulated_depreciation_amortization_property_plant_equipment",
+        "intangible_assets",
+        "intangible_assets_excluding_goodwill",
+        "goodwill",
+        "investments",
+        "long_term_investments",
+        "short_term_investments",
+        "other_current_assets",
+        "other_non_current_assets",
+        "total_liabilities",
+        "total_current_liabilities",
+        "current_accounts_payable",
+        "deferred_revenue",
+        "current_debt",
+        "short_term_debt",
+        "total_non_current_liabilities",
+        "capital_lease_obligations",
+        "long_term_debt",
+        "current_long_term_debt",
+        "long_term_debt_non_current",
+        "short_long_term_debt_total",
+        "other_current_liabilities",
+        "other_non_current_liabilities",
+        "total_shareholder_equity",
+        "treasury_stock",
+        "retained_earnings",
+        "common_stock",
+        "common_stock_shares_outstanding",
+        "execution_time"
+    ])
+    .expect("File Header Write Error (Quarterly Balance Sheet)");
+
+    if let Some(balances) = response["quarterlyReports"].as_array() {
+        for balance in balances {
+            let _ = wtr.write_record([
+                std_json_str!(balance["fiscalDateEnding"]),
+                symbol,
+                std_json_str!(balance["reportedCurrency"]),
+                std_json_str!(balance["totalAssets"]),
+                std_json_str!(balance["totalCurrentAssets"]),
+                std_json_str!(balance["cashAndCashEquivalentsAtCarryingValue"]),
+                std_json_str!(balance["cashAndShortTermInvestments"]),
+                std_json_str!(balance["inventory"]),
+                std_json_str!(balance["currentNetReceivables"]),
+                std_json_str!(balance["totalNonCurrentAssets"]),
+                std_json_str!(balance["propertyPlantEquipment"]),
+                std_json_str!(balance["accumulatedDepreciationAmortizationPPE"]),
+                std_json_str!(balance["intangibleAssets"]),
+                std_json_str!(balance["intangibleAssetsExcludingGoodwill"]),
+                std_json_str!(balance["goodwill"]),
+                std_json_str!(balance["investments"]),
+                std_json_str!(balance["longTermInvestments"]),
+                std_json_str!(balance["shortTermInvestments"]),
+                std_json_str!(balance["otherCurrentAssets"]),
+                std_json_str!(balance["otherNonCurrentAssets"]),
+                std_json_str!(balance["totalLiabilities"]),
+                std_json_str!(balance["totalCurrentLiabilities"]),
+                std_json_str!(balance["currentAccountsPayable"]),
+                std_json_str!(balance["deferredRevenue"]),
+                std_json_str!(balance["currentDebt"]),
+                std_json_str!(balance["shortTermDebt"]),
+                std_json_str!(balance["totalNonCurrentLiabilities"]),
+                std_json_str!(balance["capitalLeaseObligations"]),
+                std_json_str!(balance["longTermDebt"]),
+                std_json_str!(balance["currentLongTermDebt"]),
+                std_json_str!(balance["longTermDebtNoncurrent"]),
+                std_json_str!(balance["shortLongTermDebtTotal"]),
+                std_json_str!(balance["otherCurrentLiabilities"]),
+                std_json_str!(balance["otherNonCurrentLiabilities"]),
+                std_json_str!(balance["totalShareholderEquity"]),
+                std_json_str!(balance["treasuryStock"]),
+                std_json_str!(balance["retainedEarnings"]),
+                std_json_str!(balance["commonStock"]),
+                std_json_str!(balance["commonStockSharesOutstanding"]),
+                &execution_time.to_string(),
+            ]);
+        }
+    }
+
+    Ok(())
+}
