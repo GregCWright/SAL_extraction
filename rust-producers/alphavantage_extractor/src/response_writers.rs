@@ -4,7 +4,7 @@ use chrono::prelude::*;
 
 macro_rules! std_json_str {
     ($json:expr) => {
-        $json.as_str().unwrap()
+        &format!("{:?}", $json.as_str().unwrap())
     };
 }
 
@@ -12,7 +12,7 @@ fn writer_maker(prefix: &str, symbol: &str, execution_time: DateTime<Utc>) -> Wr
     let wtr: Writer<std::fs::File> = Writer::from_path(
         format!("{}_{}_{}.csv"
         , prefix
-        , symbol
+        , symbol.replace("\"", "")
         , execution_time.format("%Y-%m-%d")
     ))
     .expect("File Instance I/O Error");
