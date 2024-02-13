@@ -91,7 +91,7 @@ pub fn earnings_to_csv(response: serde_json::Value) -> Result<(), Error> {
         "estimated_earnings_per_share",
         "surprise",
         "surprise_percentage",
-        "execuation_time",
+        "execution_time",
     ])
     .expect("File Header Write Error (Quarterly Earnings)");
 
