@@ -10,7 +10,7 @@ macro_rules! std_json_str {
 
 fn writer_maker(prefix: &str, symbol: &str, execution_time: DateTime<Utc>) -> Writer<std::fs::File> {
     let wtr: Writer<std::fs::File> = Writer::from_path(
-        format!("{}_{}_{}.csv"
+        format!("stock_csv/{}_{}_{}.csv"
         , prefix
         , symbol.replace("\"", "")
         , execution_time.format("%Y-%m-%d")

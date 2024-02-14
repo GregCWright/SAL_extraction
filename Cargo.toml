@@ -2,4 +2,4 @@
 
 members = [
     "rust-producers/alphavantage_extractor"    
-]
+, "rust-producers/csv_insertion_handler"]
