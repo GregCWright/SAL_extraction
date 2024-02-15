@@ -259,7 +259,7 @@ pub fn income_statement_to_csv(response: serde_json::Value) -> Result<(), Error>
         "net_income_from_continuting_operations",
         "comprehensive_income_net_of_tax",
         "earnings_before_interest_taxes",
-        "earnings_befpre_interest_taxes_depreciation_amortization",
+        "earnings_before_interest_taxes_depreciation_amortization",
         "net_income",
         "execution_time"
     ])
@@ -327,7 +327,7 @@ pub fn income_statement_to_csv(response: serde_json::Value) -> Result<(), Error>
         "net_income_from_continuting_operations",
         "comprehensive_income_net_of_tax",
         "earnings_before_interest_taxes",
-        "earnings_befpre_interest_taxes_depreciation_amortization",
+        "earnings_before_interest_taxes_depreciation_amortization",
         "net_income",
         "execution_time"
     ])
