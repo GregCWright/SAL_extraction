@@ -1,6 +1,5 @@
 use clap::Parser;
 use reqwest::Error;
-use dotenv::dotenv;
 
 mod alphavantage_request;
 mod response_writers;
@@ -16,29 +15,33 @@ struct Args {
     symbol: String,
 
     #[arg(short, long, default_value = "full")]
-    output_size: String,
+    response_size: String,
+
+    #[arg(short, long, default_value = "demo")]
+    api_key: String,
+    
+    #[arg(short, long, default_value = "./")]
+    output_location: String,
 }
 
 fn main() -> Result<(), Error> {
 
-    dotenv().ok();
-    let api_key: String = std::env::var("api_key").expect("api_key must be set");
     let args = Args::parse();
 
     //For Dev
     //let response = dev_json::read_json_from_file("earnings.json");
     //println!("{:?}", serde_json::to_string_pretty(&response["annualEarnings"]).unwrap());
     let response =
-        alphavantage_request::query_api(&args.function, &args.symbol, &args.output_size, &api_key)
+        alphavantage_request::query_api(&args.function, &args.symbol, &args.response_size, &args.api_key)
             .unwrap();
 
     let _ = match args.function.as_str() {
-        "TIME_SERIES_DAILY" => response_writers::time_series_daily_to_csv(response),
-        "EARNINGS" => response_writers::earnings_to_csv(response),
-        "OVERVIEW" => response_writers::overview_to_csv(response),
-        "INCOME_STATEMENT" => response_writers::income_statement_to_csv(response),
-        "BALANCE_SHEET" => response_writers::balance_sheet_to_csv(response),
-        "CASH_FLOW" => response_writers::cash_flow_to_csv(response),
+        "TIME_SERIES_DAILY" => response_writers::time_series_daily_to_csv(response, &args.output_location),
+        "EARNINGS" => response_writers::earnings_to_csv(response, &args.output_location),
+        "OVERVIEW" => response_writers::overview_to_csv(response, &args.output_location),
+        "INCOME_STATEMENT" => response_writers::income_statement_to_csv(response, &args.output_location),
+        "BALANCE_SHEET" => response_writers::balance_sheet_to_csv(response, &args.output_location),
+        "CASH_FLOW" => response_writers::cash_flow_to_csv(response, &args.output_location),
         &_ => todo!("Function not implemented"),
     };
 

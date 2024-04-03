@@ -8,9 +8,10 @@ macro_rules! std_json_str {
     };
 }
 
-fn writer_maker(prefix: &str, symbol: &str, execution_time: DateTime<Utc>) -> Writer<std::fs::File> {
+fn writer_maker(output_location: &str, prefix: &str, symbol: &str, execution_time: DateTime<Utc>) -> Writer<std::fs::File> {
     let wtr: Writer<std::fs::File> = Writer::from_path(
-        format!("stock_csv/{}_{}_{}.csv"
+        format!("{}/{}_{}_{}.csv"
+        , output_location
         , prefix
         , symbol.replace("\"", "")
         , execution_time.format("%Y-%m-%d")
@@ -20,12 +21,12 @@ fn writer_maker(prefix: &str, symbol: &str, execution_time: DateTime<Utc>) -> Wr
     wtr
 }
 
-pub fn time_series_daily_to_csv(response: serde_json::Value) -> Result<(), Error> {
+pub fn time_series_daily_to_csv(response: serde_json::Value, output_location: &str) -> Result<(), Error> {
     
     let prefix: &str = "time_series_daily";
     let symbol: &str = std_json_str!(response["Meta Data"]["2. Symbol"]);
     let execution_time = Utc::now();
-    let mut wtr: Writer<std::fs::File> = writer_maker(prefix, symbol, execution_time);
+    let mut wtr: Writer<std::fs::File> = writer_maker(output_location, prefix, symbol, execution_time);
 
     wtr.write_record([
         "daily_price_date",
@@ -55,13 +56,13 @@ pub fn time_series_daily_to_csv(response: serde_json::Value) -> Result<(), Error
     Ok(())
 }
 
-pub fn earnings_to_csv(response: serde_json::Value) -> Result<(), Error> {
+pub fn earnings_to_csv(response: serde_json::Value, output_location: &str) -> Result<(), Error> {
     
     let prefix_1: &str = "annual_earnings";
     let prefix_2: &str = "quarterly_earnings";
     let symbol: &str = std_json_str!(response["symbol"]);
     let execution_time = Utc::now();
-    let mut wtr: Writer<std::fs::File> = writer_maker(prefix_1, symbol, execution_time);
+    let mut wtr: Writer<std::fs::File> = writer_maker(output_location, prefix_1, symbol, execution_time);
 
     wtr.write_record([
         "fiscal_date_ending",
@@ -82,7 +83,7 @@ pub fn earnings_to_csv(response: serde_json::Value) -> Result<(), Error> {
         }
     }
 
-    wtr = writer_maker(prefix_2, symbol, execution_time);
+    wtr = writer_maker(output_location, prefix_2, symbol, execution_time);
     wtr.write_record([
         "fiscal_date_ending",
         "symbol",
@@ -113,12 +114,12 @@ pub fn earnings_to_csv(response: serde_json::Value) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn overview_to_csv(response: serde_json::Value) -> Result<(), Error> {
+pub fn overview_to_csv(response: serde_json::Value, output_location: &str) -> Result<(), Error> {
     
     let prefix: &str = "overview";
     let symbol: &str = std_json_str!(response["Symbol"]);
     let execution_time = Utc::now();
-    let mut wtr: Writer<std::fs::File> = writer_maker(prefix, symbol, execution_time);
+    let mut wtr: Writer<std::fs::File> = writer_maker(output_location, prefix, symbol, execution_time);
 
     wtr.write_record([
         "symbol",
@@ -226,12 +227,12 @@ pub fn overview_to_csv(response: serde_json::Value) -> Result<(), Error> {
 
 }
 
-pub fn income_statement_to_csv(response: serde_json::Value) -> Result<(), Error> {
+pub fn income_statement_to_csv(response: serde_json::Value, output_location: &str) -> Result<(), Error> {
     let prefix_1: &str = "annual_income_statement";
     let prefix_2: &str = "quarterly_income_statement";
     let symbol: &str = std_json_str!(response["symbol"]);
     let execution_time = Utc::now();
-    let mut wtr: Writer<std::fs::File> = writer_maker(prefix_1, symbol, execution_time);
+    let mut wtr: Writer<std::fs::File> = writer_maker(output_location, prefix_1, symbol, execution_time);
 
     wtr.write_record([
         "fiscal_date_ending",
@@ -300,7 +301,7 @@ pub fn income_statement_to_csv(response: serde_json::Value) -> Result<(), Error>
         }
     }
 
-    wtr = writer_maker(prefix_2, symbol, execution_time);
+    wtr = writer_maker(output_location, prefix_2, symbol, execution_time);
     wtr.write_record([
         "fiscal_date_ending",
         "symbol",
@@ -371,12 +372,12 @@ pub fn income_statement_to_csv(response: serde_json::Value) -> Result<(), Error>
     Ok(())
 }
 
-pub fn balance_sheet_to_csv(response: serde_json::Value) -> Result<(), Error> {
+pub fn balance_sheet_to_csv(response: serde_json::Value, output_location: &str) -> Result<(), Error> {
     let prefix_1: &str = "annual_balance_sheet";
     let prefix_2: &str = "quarterly_balance_sheet";
     let symbol: &str = std_json_str!(response["symbol"]);
     let execution_time = Utc::now();
-    let mut wtr: Writer<std::fs::File> = writer_maker(prefix_1, symbol, execution_time);
+    let mut wtr: Writer<std::fs::File> = writer_maker(output_location, prefix_1, symbol, execution_time);
 
     wtr.write_record([
         "fiscal_date_ending",
@@ -469,7 +470,7 @@ pub fn balance_sheet_to_csv(response: serde_json::Value) -> Result<(), Error> {
         }
     }
 
-    wtr = writer_maker(prefix_2, symbol, execution_time);
+    wtr = writer_maker(output_location, prefix_2, symbol, execution_time);
     wtr.write_record([
         "fiscal_date_ending",
         "symbol",
@@ -564,12 +565,12 @@ pub fn balance_sheet_to_csv(response: serde_json::Value) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn cash_flow_to_csv(response: serde_json::Value) -> Result<(), Error> {
+pub fn cash_flow_to_csv(response: serde_json::Value, output_location: &str) -> Result<(), Error> {
     let prefix_1: &str = "annual_cash_flow";
     let prefix_2: &str = "quarterly_cash_flow";
     let symbol: &str = std_json_str!(response["symbol"]);
     let execution_time = Utc::now();
-    let mut wtr: Writer<std::fs::File> = writer_maker(prefix_1, symbol, execution_time);
+    let mut wtr: Writer<std::fs::File> = writer_maker(output_location, prefix_1, symbol, execution_time);
 
     wtr.write_record([
         "fiscal_date_ending",
@@ -644,7 +645,7 @@ pub fn cash_flow_to_csv(response: serde_json::Value) -> Result<(), Error> {
         }
     }
 
-    wtr = writer_maker(prefix_2, symbol, execution_time);
+    wtr = writer_maker(output_location, prefix_2, symbol, execution_time);
     wtr.write_record([
         "fiscal_date_ending",
         "symbol",
