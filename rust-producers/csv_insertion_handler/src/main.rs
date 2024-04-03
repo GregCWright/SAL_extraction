@@ -21,10 +21,10 @@ struct Args {
     #[arg(short, long)]
     host: String,
 
-    #[arg(short, long, default_value = "5432")]
+    #[arg(long, default_value = "5432")]
     port: String,
 
-    #[arg(long, default_value = "SAL")]
+    #[arg(short, long, default_value = "SAL")]
     database: String,
 
     #[arg(short, long, default_value = "./")]
