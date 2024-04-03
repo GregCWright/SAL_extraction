@@ -57,6 +57,9 @@ async fn main()  -> Result<(), sqlx::Error> {
             )
         ).await?;
     
+    let _ = sqlx::query("create schema if not exists rust_landing")
+        .execute(&pool).await?;
+
     let mut query_1: String = "".to_string();
     let mut query_2: String = "".to_string();
     let mut query_3: String = "".to_string();
@@ -70,7 +73,7 @@ async fn main()  -> Result<(), sqlx::Error> {
             .into_string()
             .unwrap();
 
-        let file_path = format!("/csv/{}", file_as_string);
+        let file_path = format!("{}/{}", csv_path, file_as_string);
         
         if file_as_string.contains("time_series_daily") {(query_1, query_2, query_3, query_4) = query_library::time_series_daily_queries(file_path.clone())}
         if file_as_string.contains("overview") {(query_1, query_2, query_3, query_4) = query_library::overview_queries(file_path.clone())}
