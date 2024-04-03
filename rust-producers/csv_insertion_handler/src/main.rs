@@ -16,7 +16,7 @@ struct Args {
     username: String,
 
     #[arg(short, long)]
-    db_password: String,
+    password: String,
 
     #[arg(short, long)]
     host: String,
@@ -24,7 +24,7 @@ struct Args {
     #[arg(short, long, default_value = "5432")]
     port: String,
 
-    #[arg(short, long, default_value = "SAL")]
+    #[arg(long, default_value = "SAL")]
     database: String,
 
     #[arg(short, long, default_value = "./")]
@@ -38,7 +38,7 @@ async fn main()  -> Result<(), sqlx::Error> {
     let args = Args::parse();
 
     let postgres_username: String = args.username;
-    let postgres_password: String = args.db_password;
+    let postgres_password: String = args.password;
     let postgres_host: String = args.host;
     let postgres_port: String = args.port;
     let postgres_database: String = args.database;
