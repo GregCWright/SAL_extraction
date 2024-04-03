@@ -18,7 +18,7 @@ struct Args {
     #[arg(short, long)]
     password: String,
 
-    #[arg(short, long)]
+    #[arg(long)]
     host: String,
 
     #[arg(long, default_value = "5432")]
