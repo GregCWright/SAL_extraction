@@ -1,6 +1,6 @@
 use std::{env, fs, path::PathBuf};
 use sqlx::{postgres::PgPoolOptions, Postgres};
-use dotenv::dotenv;
+use clap::Parser;
 
 // #[derive(Parser, Debug)]
 // #[command(author, version, about, long_about = None)]
@@ -9,29 +9,46 @@ use dotenv::dotenv;
 //     function: String,
 // }
 
-mod query_library;
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(short, long)]
+    username: String,
 
-fn append_to_path(p: PathBuf, s: &str) -> PathBuf {
-    let mut p = p.into_os_string();
-    p.push(s);
-    p.into()
+    #[arg(short, long)]
+    password: String,
+
+    #[arg(short, long)]
+    host: String,
+
+    #[arg(short, long, default_value = "5432")]
+    port: String,
+
+    #[arg(short, long, default_value = "SAL")]
+    database: String,
+
+    #[arg(short, long, default_value = "./")]
+    input_location: String,
 }
+
+mod query_library;
 
 #[tokio::main]
 async fn main()  -> Result<(), sqlx::Error> {
-    dotenv().ok();
-    let postgres_username: String = std::env::var("postgres_username").expect("postgres_username must be set");
-    let postgres_password: String = std::env::var("postgres_password").expect("postgres_password must be set");
-    // let args = Args::parse();
-    let current_dir = env::current_dir().expect("Current Path Error");
+    let args = Args::parse();
 
-    let csv_path: &str = "stock_csv";
+    let postgres_username: String = args.username;
+    let postgres_password: String = args.password;
+    let postgres_host: String = args.host;
+    let postgres_port: String = args.port;
+    let postgres_database: String = args.database;
+    let csv_path: &str = &args.input_location;
 
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(
             &format!(
-                "postgres://{postgres_username}:{postgres_password}@localhost/SAL"
+                "postgres://{postgres_username}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_database}"
                 , postgres_username = postgres_username
                 , postgres_password = postgres_password
             )
