@@ -1,5 +1,5 @@
-use std::{env, fs, path::PathBuf};
-use sqlx::{postgres::PgPoolOptions, Postgres};
+use std::fs;
+use sqlx::postgres::PgPoolOptions;
 use clap::Parser;
 
 // #[derive(Parser, Debug)]
@@ -48,9 +48,12 @@ async fn main()  -> Result<(), sqlx::Error> {
         .max_connections(5)
         .connect(
             &format!(
-                "postgres://{postgres_username}:{postgres_password}@{postgres_host}:{postgres_port}/{postgres_database}"
-                , postgres_username = postgres_username
-                , postgres_password = postgres_password
+                "postgres://{}:{}@{}:{}/{}"
+                , postgres_username
+                , postgres_password
+                , postgres_host
+                , postgres_port
+                , postgres_database
             )
         ).await?;
     
