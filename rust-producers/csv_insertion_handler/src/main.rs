@@ -57,13 +57,12 @@ async fn main()  -> Result<(), sqlx::Error> {
             )
         ).await?;
     
-    let _ = sqlx::query("create schema if not exists rust_landing")
+    let _ = sqlx::query("create schema if not exists landing")
         .execute(&pool).await?;
 
     let mut query_1: String = "".to_string();
     let mut query_2: String = "".to_string();
     let mut query_3: String = "".to_string();
-    let mut query_4: String = "".to_string();
 
     for file in fs::read_dir(csv_path).unwrap() {
 
@@ -73,20 +72,20 @@ async fn main()  -> Result<(), sqlx::Error> {
             .into_string()
             .unwrap();
 
-        let file_path = format!("{}/{}", csv_path, file_as_string);
+        let file_path = format!("/csv/{}", file_as_string);
         
-        if file_as_string.contains("time_series_daily") {(query_1, query_2, query_3, query_4) = query_library::time_series_daily_queries(file_path.clone())}
-        if file_as_string.contains("overview") {(query_1, query_2, query_3, query_4) = query_library::overview_queries(file_path.clone())}
+        if file_as_string.contains("time_series_daily") {(query_1, query_2, query_3) = query_library::time_series_daily_queries(file_path.clone())}
+        if file_as_string.contains("overview") {(query_1, query_2, query_3) = query_library::overview_queries(file_path.clone())}
 
-        if file_as_string.contains("annual_earnings") {(query_1, query_2, query_3, query_4) = query_library::annual_earnings_queries(file_path.clone())}
-        if file_as_string.contains("annual_income_statement") {(query_1, query_2, query_3, query_4) = query_library::annual_income_statement_queries(file_path.clone())}
-        if file_as_string.contains("annual_balance_sheet") {(query_1, query_2, query_3, query_4) = query_library::annual_balance_sheet_queries(file_path.clone())}
-        if file_as_string.contains("annual_cash_flow") {(query_1, query_2, query_3, query_4) = query_library::annual_cash_flow_queries(file_path.clone())}
+        if file_as_string.contains("annual_earnings") {(query_1, query_2, query_3) = query_library::annual_earnings_queries(file_path.clone())}
+        if file_as_string.contains("annual_income_statement") {(query_1, query_2, query_3) = query_library::annual_income_statement_queries(file_path.clone())}
+        if file_as_string.contains("annual_balance_sheet") {(query_1, query_2, query_3) = query_library::annual_balance_sheet_queries(file_path.clone())}
+        if file_as_string.contains("annual_cash_flow") {(query_1, query_2, query_3) = query_library::annual_cash_flow_queries(file_path.clone())}
 
-        if file_as_string.contains("quarterly_earnings") {(query_1, query_2, query_3, query_4) = query_library::quarterly_earnings_queries(file_path.clone())}
-        if file_as_string.contains("quarterly_income_statement") {(query_1, query_2, query_3, query_4) = query_library::quarterly_income_statement_queries(file_path.clone())}
-        if file_as_string.contains("quarterly_balance_sheet") {(query_1, query_2, query_3, query_4) = query_library::quarterly_balance_sheet_queries(file_path.clone())}
-        if file_as_string.contains("quarterly_cash_flow") {(query_1, query_2, query_3, query_4) = query_library::quarterly_cash_flow_queries(file_path.clone())}
+        if file_as_string.contains("quarterly_earnings") {(query_1, query_2, query_3) = query_library::quarterly_earnings_queries(file_path.clone())}
+        if file_as_string.contains("quarterly_income_statement") {(query_1, query_2, query_3) = query_library::quarterly_income_statement_queries(file_path.clone())}
+        if file_as_string.contains("quarterly_balance_sheet") {(query_1, query_2, query_3) = query_library::quarterly_balance_sheet_queries(file_path.clone())}
+        if file_as_string.contains("quarterly_cash_flow") {(query_1, query_2, query_3) = query_library::quarterly_cash_flow_queries(file_path.clone())}
 
         let _ = sqlx::query(&query_1)
             .execute(&pool).await?;
@@ -95,9 +94,6 @@ async fn main()  -> Result<(), sqlx::Error> {
             .execute(&pool).await?;
 
         let _ = sqlx::query(&query_3)
-            .execute(&pool).await?;
-
-        let _ = sqlx::query(&query_4)
             .execute(&pool).await?;
     }
 
